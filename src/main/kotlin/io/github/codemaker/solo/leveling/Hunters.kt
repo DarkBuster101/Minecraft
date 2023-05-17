@@ -7,21 +7,20 @@ abstract class Hunters(type: Hunter) {
     enum class Hunter(
         val key: String,
         val displayNames: String,
-        val creator: () -> Hunters
     ) {
-        S_LEVEL("s", "S급 ", ::S_Level),
-        A_LEVEL("a", "A급 ", ::A_Level),
-        B_LEVEL("b", "B급 ", ::B_Level),
-        C_LEVEL("c", "C급 ", ::C_Level),
-        D_LEVEL("d", "D급 ", ::D_Level),
-        E_LEVEL("e", "E급 ", ::E_Level),
+        S_LEVEL("s", "S급 "),
+        A_LEVEL("a", "A급 "),
+        B_LEVEL("b", "B급 "),
+        C_LEVEL("c", "C급 "),
+        D_LEVEL("d", "D급 "),
+        E_LEVEL("e", "E급 "),
 
-        Mage("mage", "마법사", ::Mage),
-        Berserker("berserker", "전사", ::Berserker),
-        Bandit("bandit", "도적", ::Bandit),
-        Archer("archer", "궁수", ::Archer),
-        Healer("healer", "힐러", ::Healer),
-        Tank("tank", "탱커", ::Tank);
+        Mage("mage", "마법사"),
+        Berserker("berserker", "전사"),
+        Bandit("bandit", "도적"),
+        Archer("archer", "궁수"),
+        Healer("healer", "힐러"),
+        Tank("tank", "탱커");
 
 
         override fun toString(): String {
