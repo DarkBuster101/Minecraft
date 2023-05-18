@@ -1,11 +1,12 @@
 package io.github.codemaker.solo.leveling.configs
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.framework.Class
 import io.github.codemaker.solo.leveling.framework.Level
 import java.util.*
 
-class PlayerConfig(main: Main) : Config(main, "players.yml") {
+class PlayerConfig(soloLeveling: SoloLeveling) : Config(soloLeveling, "players.yml") {
+    /*For normal class and level*/
     fun getClass(id: UUID): Class? {
         return Class.getClassByName(getString("$id.class")!!)
     }
@@ -21,4 +22,5 @@ class PlayerConfig(main: Main) : Config(main, "players.yml") {
     fun setLevel(id: UUID, level: Level?) {
         set("$id.level", level?.name)
     }
+
 }

@@ -1,6 +1,6 @@
 package io.github.codemaker.solo.leveling.listeners
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.Utils
 import io.github.codemaker.solo.leveling.framework.Items
 import io.github.codemaker.solo.leveling.managers.ProfileManager
@@ -20,8 +20,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
-class ClickListener(private val main: Main) : Listener {
-    private val profileManager: ProfileManager? = main.profileManager
+class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
+    private val profileManager: ProfileManager? = soloLeveling.profileManager
     private val swivelCD: MutableMap<UUID, Int> = HashMap()
     private val barrageCD: MutableMap<UUID, Int> = HashMap()
     private val barraging: MutableList<UUID> = ArrayList()
@@ -47,7 +47,7 @@ class ClickListener(private val main: Main) : Listener {
                     }
                 }
             }
-        }.runTaskTimer(main, 0L, 1L)
+        }.runTaskTimer(soloLeveling, 0L, 1L)
         object : BukkitRunnable() {
             override fun run() {
                 for (uuid in playerMana.keys) {
@@ -57,7 +57,7 @@ class ClickListener(private val main: Main) : Listener {
                     }
                 }
             }
-        }.runTaskTimer(main, 0L, 2L)
+        }.runTaskTimer(soloLeveling, 0L, 2L)
     }
 
     private fun formatCombo(combo: String): String {
@@ -100,7 +100,7 @@ class ClickListener(private val main: Main) : Listener {
                             cancel()
                         }
                     }
-                }.runTaskTimer(main, 0L, 20L)
+                }.runTaskTimer(soloLeveling, 0L, 20L)
             }
         } else if (Items.ARCHER_BOW.isSimilar(item)) {
             if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
@@ -130,7 +130,7 @@ class ClickListener(private val main: Main) : Listener {
                             }
                         }
                     }
-                }.runTaskTimer(main, 0L, 20L)
+                }.runTaskTimer(soloLeveling, 0L, 20L)
             }
         } else if (Items.MAGE_WAND.isSimilar(item)) {
             event.isCancelled = true
@@ -199,7 +199,7 @@ class ClickListener(private val main: Main) : Listener {
                                     cancel()
                                 }
                             }
-                        }.runTaskTimer(main, 0L, 6L)
+                        }.runTaskTimer(soloLeveling, 0L, 6L)
                     }
                 }
             }
@@ -224,7 +224,7 @@ class ClickListener(private val main: Main) : Listener {
                         cancel()
                     }
                 }
-            }.runTaskTimer(main, 0L, 1L)
+            }.runTaskTimer(soloLeveling, 0L, 1L)
         }
         if (barraging.contains(player.uniqueId) && event.force >= 1.0f) {
             object : BukkitRunnable() {
@@ -244,14 +244,14 @@ class ClickListener(private val main: Main) : Listener {
                                     cancel()
                                 }
                             }
-                        }.runTaskTimer(main, 0L, 1L)
+                        }.runTaskTimer(soloLeveling, 0L, 1L)
                     }
                     shots -= 1
                     if (shots == 0) {
                         cancel()
                     }
                 }
-            }.runTaskTimer(main, 0L, 3L)
+            }.runTaskTimer(soloLeveling, 0L, 3L)
         }
     }
 }

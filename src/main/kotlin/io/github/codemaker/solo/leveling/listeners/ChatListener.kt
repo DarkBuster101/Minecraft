@@ -1,19 +1,18 @@
 package io.github.codemaker.solo.leveling.listeners
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.Utils
 import io.github.codemaker.solo.leveling.managers.ProfileManager
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.player.AsyncPlayerChatEvent
 
-class ChatListener(main: Main) : Listener {
+class ChatListener(soloLeveling: SoloLeveling) : Listener {
     private val profileManager: ProfileManager?
 
     init {
-        profileManager = main.profileManager
+        profileManager = soloLeveling.profileManager
     }
 
     @EventHandler

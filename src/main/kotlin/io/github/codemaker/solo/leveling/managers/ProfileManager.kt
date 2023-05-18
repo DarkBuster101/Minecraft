@@ -1,17 +1,16 @@
 package io.github.codemaker.solo.leveling.managers
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.configs.PlayerConfig
-import io.github.codemaker.solo.leveling.framework.Class
-import io.github.codemaker.solo.leveling.framework.Level
-import io.github.codemaker.solo.leveling.framework.Profile
+import io.github.codemaker.solo.leveling.framework.*
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.random.Random
 
-class ProfileManager(private val main: Main) {
-    private val playerConfig: PlayerConfig? = main.configManager?.playerConfig
+class ProfileManager(private val soloLeveling: SoloLeveling) {
+    private val playerConfig: PlayerConfig? = soloLeveling.configManager?.playerConfig
     private val profiles: MutableMap<UUID, Profile> = HashMap()
+
 
     fun loadProfiles() {
         for (key in playerConfig!!.getSection("")) {
@@ -33,6 +32,12 @@ class ProfileManager(private val main: Main) {
 
     fun createProfile(player: Player): Profile {
         val profile = Profile(randomClass(), randomLevel())
+        profiles[player.uniqueId] = profile
+        return profile
+    }
+
+    fun createSpeicalProfile(player: Player): Profile {
+        val profile = Profile(Class.Necromacer, Level.Upgrader)
         profiles[player.uniqueId] = profile
         return profile
     }

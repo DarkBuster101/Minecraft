@@ -1,14 +1,14 @@
 package io.github.codemaker.solo.leveling.configs
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.Utils
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.IOException
 
-abstract class Config(protected var main: Main, private var name: String) : YamlConfiguration() {
-    private var file: File = File(main.dataFolder, name)
+abstract class Config(protected var soloLeveling: SoloLeveling, private var name: String) : YamlConfiguration() {
+    private var file: File = File(soloLeveling.dataFolder, name)
 
     fun getSection(path: String?): Set<String> {
         val section = getConfigurationSection(path!!)
@@ -18,7 +18,7 @@ abstract class Config(protected var main: Main, private var name: String) : Yaml
     private fun checkFile() {
         if (!file.exists()) {
             file.parentFile.mkdirs()
-            main.saveResource(name, false)
+            soloLeveling.saveResource(name, false)
         }
     }
 

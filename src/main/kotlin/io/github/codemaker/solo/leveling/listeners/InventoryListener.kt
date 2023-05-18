@@ -1,18 +1,17 @@
 package io.github.codemaker.solo.leveling.listeners
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.Utils
 import io.github.codemaker.solo.leveling.framework.Class
 import io.github.codemaker.solo.leveling.framework.Level
-import io.github.codemaker.solo.leveling.framework.Profile
 import io.github.codemaker.solo.leveling.managers.ProfileManager
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 
-class InventoryListener(private val main: Main) : Listener {
-    private val profileManager: ProfileManager? = main.profileManager
+class InventoryListener(private val soloLeveling: SoloLeveling) : Listener {
+    private val profileManager: ProfileManager? = soloLeveling.profileManager
 
     @EventHandler
     fun onClick(event: InventoryClickEvent) {

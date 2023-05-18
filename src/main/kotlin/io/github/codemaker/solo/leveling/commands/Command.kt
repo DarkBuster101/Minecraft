@@ -1,14 +1,14 @@
 package io.github.codemaker.solo.leveling.commands
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-abstract class Command(protected var main: Main, name: String?) : CommandExecutor {
+abstract class Command(protected var soloLeveling: SoloLeveling, name: String?) : CommandExecutor {
     init {
-        val pluginCommand = main.getCommand(name!!)
+        val pluginCommand = soloLeveling.getCommand(name!!)
         pluginCommand!!.setExecutor(this)
     }
 

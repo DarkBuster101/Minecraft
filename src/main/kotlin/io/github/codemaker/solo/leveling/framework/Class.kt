@@ -15,12 +15,23 @@ enum class Class(
         Items.BERSKER_ICON,
         Items.BERSKER_ARMOR,
         Items.BERSKER_SWORD,
-        ItemStack(Material.COOKED_BEEF, 64)
+        ItemStack(Material.GOLDEN_APPLE, 10)
     ),
-    ARCHER("&bArcher", Items.ARCHER_ICON, Items.ARCHER_ARMOR, Items.ARCHER_BOW, ItemStack(Material.COOKED_BEEF, 64)),
-    MAGE("&dMage", Items.MAGE_ICON, Items.MAGE_ARMOR, Items.MAGE_WAND, ItemStack(Material.COOKED_BEEF, 64));
+    ARCHER("&bArcher", Items.ARCHER_ICON, Items.ARCHER_ARMOR, Items.ARCHER_BOW, ItemStack(Material.GOLDEN_APPLE, 10)),
+    MAGE("&dMage", Items.MAGE_ICON, Items.MAGE_ARMOR, Items.MAGE_WAND, ItemStack(Material.GOLDEN_APPLE, 10)),
+    BANDIT("&4Bandit", Items.Bandit_ICON, Items.MAGE_ARMOR, Items.MAGE_WAND, ItemStack(Material.GOLDEN_APPLE, 10)),
 
-    val rawName: String? = Utils.decolor(name)
+
+    Necromacer(
+        "&1Necromacer",
+        Items.Necromacer_ICON,
+        Items.Necromacer_ARMOR,
+        Items.Necromacer_SWORD,
+        Items.Necromacer_WAND,
+        ItemStack(Material.ENCHANTED_GOLDEN_APPLE, 10)
+    );
+
+    val rawName: String? = Utils.decolor(displayName)
     val items: Array<ItemStack>
     val icon: ItemStack?
 
