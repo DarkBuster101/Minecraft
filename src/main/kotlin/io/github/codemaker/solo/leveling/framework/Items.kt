@@ -1,7 +1,10 @@
 package io.github.codemaker.solo.leveling.framework
 
 import io.github.codemaker.solo.leveling.Utils
+import io.github.codemaker.solo.leveling.Utils.returnAttributeModifier
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 
 object Items {
     val BERSKER_ICON = Utils.createItem(
@@ -77,7 +80,7 @@ object Items {
     val S_LEVEL_ICON = Utils.createItem(
         Material.NETHERITE_HELMET,
         1,
-        false,
+        true,
         false,
         "&3S Level Hunter",
         "&7Become a strongest hunter in the world"
@@ -86,7 +89,7 @@ object Items {
     val A_LEVEL_ICON = Utils.createItem(
         Material.DIAMOND_HELMET,
         1,
-        false,
+        true,
         false,
         "&3A Level Hunter",
         "&7Become a stronger hunter"
@@ -95,7 +98,7 @@ object Items {
     val B_LEVEL_ICON = Utils.createItem(
         Material.IRON_HELMET,
         1,
-        false,
+        true,
         false,
         "&3B Level Hunter",
         "&7Become a middle class hunter"
@@ -128,4 +131,61 @@ object Items {
         "&3E Level Hunter",
         "&7Become a weakest hunter"
     )
+
+    val Necromacer_ICON = Utils.createItem(
+        Material.WITHER_SKELETON_SKULL,
+        1,
+        true,
+        false,
+        "&1어둠의 군주",
+        "&7최강의 군주 - 어둠의 군주"
+    )
+
+    private val armorAttribute = Attribute.GENERIC_ARMOR_TOUGHNESS
+    private val armorAttributeModifier = returnAttributeModifier(armorAttribute, 20.0, AttributeModifier.Operation.ADD_NUMBER)
+
+    val Necromacer_ARMOR = Utils.createArmor(
+        Utils.createItem(Material.NETHERITE_HELMET, 1, true, true, "&1어둠의 군주의 투구", "&7기본으로 지급되는 어둠의 군주의 투구입니다", attribute = armorAttribute, attributeModifier = armorAttributeModifier),
+        Utils.createItem(Material.IRON_CHESTPLATE, 1, false, true, "&1어둠의 군주의 흉갑", "&7기본으로 지급되는 어둠의 군주의 흉갑입니다", attribute = armorAttribute, attributeModifier = armorAttributeModifier),
+        Utils.createItem(Material.IRON_LEGGINGS, 1, false, true, "&1어둠의 군주의 각반", "&7기본으로 지급되는 어둠의 군주의 각반입니다", attribute = armorAttribute, attributeModifier = armorAttributeModifier),
+        Utils.createItem(Material.IRON_BOOTS, 1, false, true, "&1어둠의 군주의 신발", "&7기본으로 지급되는 어둠의 군주의 신발입니다", attribute = armorAttribute, attributeModifier = armorAttributeModifier)
+    )
+
+    val Necromacer_SWORD = Utils.createItem(
+        Material.NETHERITE_SWORD,
+        1,
+        true,
+        true,
+        "&1어둠의 군주의 검",
+        "&7기본으로 지급되는 어둠의 군주의 검입니다"
+    )
+
+    val Necromacer_WAND = Utils.createItem(
+        Material.BLAZE_ROD,
+        1,
+        true,
+        true,
+        "&1어둠의 군주의 지팡이",
+        "&7기본으로 지급되는 어둠의 군주의 지팡이입니다"
+    )
+
+    val Bandit_ICON = Utils.createItem(
+        Material.EMERALD,
+        1,
+        false,
+        false,
+        "&4도적",
+        "&7도적이 되어 세상을 털어보세요!"
+    )
+
+    val Bandit_SWORD = Utils.createItem( //continue, armor with invisibility and speed
+        Material.EMERALD,
+        1,
+        false,
+        false,
+        "&4도적",
+        "&7도적이 되어 세상을 털어보세요!"
+    )
+
+
 }

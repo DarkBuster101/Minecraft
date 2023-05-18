@@ -1,17 +1,17 @@
 package io.github.codemaker.solo.leveling.managers
 
-import io.github.codemaker.solo.leveling.Main
+import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.configs.Config
 import io.github.codemaker.solo.leveling.configs.PlayerConfig
 
-class ConfigManager(private val main: Main) {
+class ConfigManager(private val soloLeveling: SoloLeveling) {
     private val configs: MutableList<Config> = ArrayList()
     var playerConfig: PlayerConfig
 
     init {
-        playerConfig = PlayerConfig(main)
+        playerConfig = PlayerConfig(soloLeveling)
         configs.add(playerConfig)
-        configs.add(PlayerConfig(main).also { playerConfig = it })
+        configs.add(PlayerConfig(soloLeveling).also { playerConfig = it })
     }
 
     fun loadConfig() {
