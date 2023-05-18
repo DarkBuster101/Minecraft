@@ -15,7 +15,7 @@ class SoloLeveling : JavaPlugin() {
         private set
 
     override fun onEnable() {
-        pluginLogger = getLogger()
+        pluginLogger = logger
         configManager = ConfigManager(this)
         profileManager = ProfileManager(this)
         configManager!!.loadConfig()
@@ -42,3 +42,5 @@ class SoloLeveling : JavaPlugin() {
             private set
     }
 }
+
+//https://github.com/DarkBuster101/Minecraft.git

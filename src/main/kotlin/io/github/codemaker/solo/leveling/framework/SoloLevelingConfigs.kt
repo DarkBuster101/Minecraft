@@ -13,7 +13,7 @@ object SoloLevelingConfigs {
     var defaultClazz = arrayListOf(
         "Mage", //armor with more mana(intelligence), fewer defences; weapon with different types of magic (fire, light, water, earth);
         "Berserker", //armor with more strength and defences; weapon with different types of sword (dagger, long-sword);
-        "Bandit", //armor with more speed and moderate defences; weapon with different types of sword (dagger, shuriken);
+        "Assassin", //armor with more speed and moderate defences; weapon with different types of sword (dagger, shuriken);
         "Archer", //armor with more speed and fewer defences; weapon with different types of bow (magic, normal);
         "Fighter", //armor with more strength, speed and moderate defences; weapon is a gantlet;
         "Healer", //armor with more mana(intelligence), more speed; no or little attack skill; Healing passive or spell book instead;

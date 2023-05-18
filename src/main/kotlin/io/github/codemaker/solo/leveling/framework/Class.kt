@@ -19,7 +19,8 @@ enum class Class(
     ),
     ARCHER("&bArcher", Items.ARCHER_ICON, Items.ARCHER_ARMOR, Items.ARCHER_BOW, ItemStack(Material.GOLDEN_APPLE, 10)),
     MAGE("&dMage", Items.MAGE_ICON, Items.MAGE_ARMOR, Items.MAGE_WAND, ItemStack(Material.GOLDEN_APPLE, 10)),
-    BANDIT("&4Bandit", Items.Bandit_ICON, Items.MAGE_ARMOR, Items.MAGE_WAND, ItemStack(Material.GOLDEN_APPLE, 10)),
+    ASSASSIN("&4Assassin", Items.ASSASSIN_ICON, Items.MAGE_ARMOR, Items.ASSASSIN_SWORD, ItemStack(Material.GOLDEN_APPLE, 10)),
+//    FIGHTER("&2Fighter", Items),
 
 
     Necromacer(

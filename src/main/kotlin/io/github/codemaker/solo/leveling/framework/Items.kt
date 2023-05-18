@@ -169,22 +169,40 @@ object Items {
         "&7기본으로 지급되는 어둠의 군주의 지팡이입니다"
     )
 
-    val Bandit_ICON = Utils.createItem(
-        Material.EMERALD,
+    val ASSASSIN_ICON = Utils.createItem(
+        Material.REDSTONE,
         1,
         false,
         false,
-        "&4도적",
-        "&7도적이 되어 세상을 털어보세요!"
+        "&4암살자",
+        "&7암살자가 되어 적들을 암살해 보세요!"
     )
 
-    val Bandit_SWORD = Utils.createItem( //continue, armor with invisibility and speed
-        Material.EMERALD,
+    val ASSASSIN_SWORD = Utils.createItem( //continue, armor with invisibility and speed
+        Material.IRON_SWORD,
         1,
         false,
         false,
-        "&4도적",
-        "&7도적이 되어 세상을 털어보세요!"
+        "&4암살자의 검",
+        "&7암살자가 되어 적들을 암살해 보세요!"
+    )
+
+    val FIGHTER_ICON = Utils.createItem(
+        Material.NETHER_PORTAL,
+        1,
+        false,
+        false,
+        "&4무투가",
+        "&7무투가가 되어 세상을 지배해보세요!"
+    )
+
+    val FIGHTER_SWORD = Utils.createItem(
+        Material.IRON_SWORD,
+        1,
+        false,
+        false,
+        "&4무투가의 검",
+        "&7무투가가 되어 세상을 지배해보세요!"
     )
 
 
