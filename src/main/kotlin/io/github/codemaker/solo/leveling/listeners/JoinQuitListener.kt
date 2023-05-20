@@ -1,6 +1,7 @@
 package io.github.codemaker.solo.leveling.listeners
 
 import io.github.codemaker.solo.leveling.SoloLeveling
+import io.github.codemaker.solo.leveling.Utils
 import io.github.codemaker.solo.leveling.framework.SoloLevelingConfigs
 import io.github.codemaker.solo.leveling.managers.ProfileManager
 import org.bukkit.event.EventHandler

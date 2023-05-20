@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound
+import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Fireball
 import org.bukkit.entity.LivingEntity
@@ -28,15 +29,18 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
     private val playerMana: MutableMap<UUID, Int> = HashMap()
     private val wandcc: MutableMap<UUID, String> = HashMap()
 
+    private val affectedBlocks = mutableListOf<Location>()
+
+
     init {
         object : BukkitRunnable() {
             override fun run() {
                 for (player in Bukkit.getOnlinePlayers()) {
                     if (Items.MAGE_WAND.isSimilar(player.inventory.itemInMainHand)) {
                         if (!playerMana.containsKey(player.uniqueId)) {
-                            playerMana[player.uniqueId] = 2000
+                            playerMana[player.uniqueId] = 20000
                         }
-                        var message = "&bMana: &e" + playerMana[player.uniqueId] + "&f/2000"
+                        var message = "&bMana: &e" + playerMana[player.uniqueId] + "&f/20000"
                         val combo = wandcc[player.uniqueId]
                         if (combo != null) {
                             message += "    &eCombo: " + formatCombo(combo)
@@ -52,16 +56,16 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
             override fun run() {
                 for (uuid in playerMana.keys) {
                     val left = playerMana[uuid]!!
-                    if (left < 2000) {
-                        playerMana[uuid] = left + 1
+                    if (left < 20000) {
+                        playerMana[uuid] = left + 10
                     }
                 }
             }
         }.runTaskTimer(soloLeveling, 0L, 2L)
     }
 
-    private fun formatCombo(combo: String): String {
-        var combo = combo
+    private fun formatCombo(comboFormat: String): String {
+        var combo = comboFormat
         combo = "$combo&7"
         for (i in 0 until 3 - combo.length) {
             combo += "_"
@@ -84,7 +88,7 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
                 }
                 for (entity in player.getNearbyEntities(4.0, 2.0, 4.0)) {
                     if (entity is LivingEntity) {
-                        entity.damage(8.0)
+                        entity.damage(player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)?.value?.plus(10.0) ?: 10.0)
                         entity.velocity = entity.location.toVector().subtract(player.location.toVector()).multiply(0.6f)
                     }
                 }
@@ -255,3 +259,92 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
         }
     }
 }
+
+/*code for shockwave*/
+//import org.bukkit.Bukkit
+//import org.bukkit.Location
+//import org.bukkit.Material
+//import org.bukkit.World
+//import org.bukkit.block.Block
+//import org.bukkit.event.EventHandler
+//import org.bukkit.event.Listener
+//import org.bukkit.event.player.PlayerInteractEvent
+//import org.bukkit.plugin.java.JavaPlugin
+//import org.bukkit.scheduler.BukkitRunnable
+//
+//class ShockwavePlugin : JavaPlugin(), Listener {
+//    private val affectedBlocks = mutableListOf<Location>()
+//
+//    override fun onEnable() {
+//        server.pluginManager.registerEvents(this, this)
+//    }
+//
+//    @EventHandler
+//    fun onPlayerInteract(event: PlayerInteractEvent) {
+//        if (event.action == Action.RIGHT_CLICK_BLOCK) {
+//            val clickedBlockLoc = event.clickedBlock?.location
+//            if (clickedBlockLoc != null) {
+//                createShockwave(clickedBlockLoc)
+//            }
+//        }
+//    }
+//
+//    private fun createShockwave(location: Location) {
+//        val world: World? = location.world
+//        val radius = 5.0
+//
+//        // Store the initial state of the affected blocks
+//        for (x in -5..5) {
+//            for (y in -5..5) {
+//                for (z in -5..5) {
+//                    val currentLocation = location.clone().add(x, y, z)
+//                    if (currentLocation.distance(location) <= radius) {
+//                        val block: Block = world?.getBlockAt(currentLocation) ?: continue
+//                        if (block.type != Material.AIR) {
+//                            affectedBlocks.add(currentLocation.clone())
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        // Start the animation task
+//        object : BukkitRunnable() {
+//            var t = 0.0
+//            val duration = 20.0 // Adjust the duration as desired
+//
+//            override fun run() {
+//                t += 0.1
+//
+//                // Animate the blocks rising and falling
+//                for (blockLoc in affectedBlocks) {
+//                    val x: Double = blockLoc.x
+//                    val y: Double = blockLoc.y
+//                    val z: Double = blockLoc.z
+//
+//                    val newY = y + Math.sin(t) * 2
+//
+//                    val newLoc = Location(world, x, newY, z)
+//                    val block: Block = newLoc.block
+//
+//                    if (newY > y) {
+//                        block.type = Material.AIR
+//                    } else {
+//                        block.type = Material.STONE // Adjust the material as desired
+//                    }
+//                }
+//
+//                if (t >= duration) {
+//                    // Regenerate the blocks
+//                    for (blockLoc in affectedBlocks) {
+//                        val block: Block = blockLoc.block
+//                        block.type = Material.STONE // Adjust the material as desired
+//                    }
+//
+//                    affectedBlocks.clear()
+//                    cancel()
+//                }
+//            }
+//        }.runTaskTimer(this, 0, 1)
+//    }
+//}

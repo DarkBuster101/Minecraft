@@ -33,12 +33,14 @@ class ProfileManager(private val soloLeveling: SoloLeveling) {
     fun createProfile(player: Player): Profile {
         val profile = Profile(randomClass(), randomLevel())
         profiles[player.uniqueId] = profile
+        applyClassAndLevel(player, profile)
         return profile
     }
 
     fun createSpeicalProfile(player: Player): Profile {
         val profile = Profile(Class.Necromacer, Level.Upgrader)
         profiles[player.uniqueId] = profile
+        applyClassAndLevel(player, profile)
         return profile
     }
 
@@ -56,5 +58,14 @@ class ProfileManager(private val soloLeveling: SoloLeveling) {
         val options = listOf(Level.S_LEVEL, Level.A_LEVEL, Level.B_LEVEL, Level.C_LEVEL, Level.D_LEVEL, Level.E_LEVEL)
         val randomIndex = Random.nextInt(options.size)
         return options[randomIndex]
+    }
+
+    private fun applyClassAndLevel(player: Player, profile: Profile) {
+        player.inventory.armorContents = profile.clazz?.armor!!
+        player.inventory.addItem(*profile.clazz!!.items)
+
+        for (i in 0 until profile.level!!.mcAttributes.size) {
+            player.getAttribute(profile.level!!.mcAttributes[i])?.baseValue = profile.level!!.attributesLevel[i]
+        }
     }
 }
