@@ -55,9 +55,23 @@ class ProfileManager(private val soloLeveling: SoloLeveling) {
     }
 
     private fun randomLevel(): Level {
-        val options = listOf(Level.S_LEVEL, Level.A_LEVEL, Level.B_LEVEL, Level.C_LEVEL, Level.D_LEVEL, Level.E_LEVEL)
-        val randomIndex = Random.nextInt(options.size)
-        return options[randomIndex]
+        val levels = listOf(Level.S_LEVEL, Level.A_LEVEL, Level.B_LEVEL, Level.C_LEVEL, Level.D_LEVEL, Level.E_LEVEL)
+
+        val probabilities = listOf(1.0, 1.5, 2.0, 4.0, 5.0, 6.0) // Relative probabilities for each level
+
+        val randomIndex = Random.nextDouble(probabilities.sum())
+        var cumulativeSum = 0.0
+
+        var selectedLevel: Level? = null
+        for ((index, level) in levels.withIndex()) {
+            cumulativeSum += probabilities[index]
+            if (randomIndex < cumulativeSum) {
+                selectedLevel = level
+                break
+            }
+        }
+
+        return selectedLevel!!
     }
 
     private fun applyClassAndLevel(player: Player, profile: Profile) {
