@@ -3,12 +3,11 @@ package io.github.codemaker.solo.leveling.listeners
 import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.Utils
 import io.github.codemaker.solo.leveling.framework.Items
+import io.github.codemaker.solo.leveling.framework.Profile
 import io.github.codemaker.solo.leveling.managers.ProfileManager
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Particle
-import org.bukkit.Sound
+import org.bukkit.*
 import org.bukkit.attribute.Attribute
+import org.bukkit.block.Block
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.Fireball
 import org.bukkit.entity.LivingEntity
@@ -20,6 +19,7 @@ import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
+import kotlin.math.sin
 
 class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
     private val profileManager: ProfileManager? = soloLeveling.profileManager
@@ -79,34 +79,9 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
         val player = event.player
         val item = player.inventory.itemInMainHand
         val action = event.action
-        if (Items.BERSKER_SWORD.isSimilar(item)) {
-            if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-                event.isCancelled = true
-                if (swivelCD.containsKey(player.uniqueId)) {
-                    Utils.msgPlayer(player, "&fCooldown of &e" + swivelCD[player.uniqueId] + "s for &aSwivel!")
-                    return
-                }
-                for (entity in player.getNearbyEntities(4.0, 2.0, 4.0)) {
-                    if (entity is LivingEntity) {
-                        entity.damage(player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)?.value?.plus(10.0) ?: 10.0)
-                        entity.velocity = entity.location.toVector().subtract(player.location.toVector()).multiply(0.6f)
-                    }
-                }
-                swivelCD[player.uniqueId] = 7
-                object : BukkitRunnable() {
-                    override fun run() {
-                        val current = swivelCD[player.uniqueId]!!
-                        if (current > 0) {
-                            swivelCD[player.uniqueId] = current - 1
-                        }
-                        if (current == 0) {
-                            swivelCD.remove(player.uniqueId)
-                            cancel()
-                        }
-                    }
-                }.runTaskTimer(soloLeveling, 0L, 20L)
-            }
-        } else if (Items.ARCHER_BOW.isSimilar(item)) {
+        val profile = profileManager?.getProfile(player.uniqueId)
+
+        if (Items.ARCHER_BOW.isSimilar(item)) {
             if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
                 event.isCancelled = true
                 if (barraging.contains(player.uniqueId)) {
@@ -260,91 +235,4 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
     }
 }
 
-/*code for shockwave*/
-//import org.bukkit.Bukkit
-//import org.bukkit.Location
-//import org.bukkit.Material
-//import org.bukkit.World
-//import org.bukkit.block.Block
-//import org.bukkit.event.EventHandler
-//import org.bukkit.event.Listener
-//import org.bukkit.event.player.PlayerInteractEvent
-//import org.bukkit.plugin.java.JavaPlugin
-//import org.bukkit.scheduler.BukkitRunnable
-//
-//class ShockwavePlugin : JavaPlugin(), Listener {
-//    private val affectedBlocks = mutableListOf<Location>()
-//
-//    override fun onEnable() {
-//        server.pluginManager.registerEvents(this, this)
-//    }
-//
-//    @EventHandler
-//    fun onPlayerInteract(event: PlayerInteractEvent) {
-//        if (event.action == Action.RIGHT_CLICK_BLOCK) {
-//            val clickedBlockLoc = event.clickedBlock?.location
-//            if (clickedBlockLoc != null) {
-//                createShockwave(clickedBlockLoc)
-//            }
-//        }
-//    }
-//
-//    private fun createShockwave(location: Location) {
-//        val world: World? = location.world
-//        val radius = 5.0
-//
-//        // Store the initial state of the affected blocks
-//        for (x in -5..5) {
-//            for (y in -5..5) {
-//                for (z in -5..5) {
-//                    val currentLocation = location.clone().add(x, y, z)
-//                    if (currentLocation.distance(location) <= radius) {
-//                        val block: Block = world?.getBlockAt(currentLocation) ?: continue
-//                        if (block.type != Material.AIR) {
-//                            affectedBlocks.add(currentLocation.clone())
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        // Start the animation task
-//        object : BukkitRunnable() {
-//            var t = 0.0
-//            val duration = 20.0 // Adjust the duration as desired
-//
-//            override fun run() {
-//                t += 0.1
-//
-//                // Animate the blocks rising and falling
-//                for (blockLoc in affectedBlocks) {
-//                    val x: Double = blockLoc.x
-//                    val y: Double = blockLoc.y
-//                    val z: Double = blockLoc.z
-//
-//                    val newY = y + Math.sin(t) * 2
-//
-//                    val newLoc = Location(world, x, newY, z)
-//                    val block: Block = newLoc.block
-//
-//                    if (newY > y) {
-//                        block.type = Material.AIR
-//                    } else {
-//                        block.type = Material.STONE // Adjust the material as desired
-//                    }
-//                }
-//
-//                if (t >= duration) {
-//                    // Regenerate the blocks
-//                    for (blockLoc in affectedBlocks) {
-//                        val block: Block = blockLoc.block
-//                        block.type = Material.STONE // Adjust the material as desired
-//                    }
-//
-//                    affectedBlocks.clear()
-//                    cancel()
-//                }
-//            }
-//        }.runTaskTimer(this, 0, 1)
-//    }
-//}
+
