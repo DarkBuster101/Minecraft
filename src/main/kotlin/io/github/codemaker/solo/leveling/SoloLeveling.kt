@@ -1,6 +1,7 @@
 package io.github.codemaker.solo.leveling
 
 import io.github.codemaker.solo.leveling.clazz.Berserker
+import io.github.codemaker.solo.leveling.clazz.Mage
 import io.github.codemaker.solo.leveling.commands.ClassCmd
 import io.github.codemaker.solo.leveling.commands.LevelCmd
 import io.github.codemaker.solo.leveling.listeners.*
@@ -30,6 +31,7 @@ class SoloLeveling : JavaPlugin() {
         pluginManager.registerEvents(ClickListener(this), this)
         pluginManager.registerEvents(EventListeners(this), this)
         pluginManager.registerEvents(Berserker(this), this)
+        pluginManager.registerEvents(Mage(this), this)
         Utils.log("Plugin fully enabled!")
     }
 
