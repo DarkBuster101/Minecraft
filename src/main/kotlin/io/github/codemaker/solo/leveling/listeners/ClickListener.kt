@@ -31,49 +31,6 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
 
     private val affectedBlocks = mutableListOf<Location>()
 
-
-    init {
-        object : BukkitRunnable() {
-            override fun run() {
-                for (player in Bukkit.getOnlinePlayers()) {
-                    if (Items.MAGE_WAND.isSimilar(player.inventory.itemInMainHand)) {
-                        if (!playerMana.containsKey(player.uniqueId)) {
-                            playerMana[player.uniqueId] = 20000
-                        }
-                        var message = "&bMana: &e" + playerMana[player.uniqueId] + "&f/20000"
-                        val combo = wandcc[player.uniqueId]
-                        if (combo != null) {
-                            message += "    &eCombo: " + formatCombo(combo)
-                        }
-                        Utils.actionbar(player, message)
-                    } else {
-                        wandcc.remove(player.uniqueId)
-                    }
-                }
-            }
-        }.runTaskTimer(soloLeveling, 0L, 1L)
-        object : BukkitRunnable() {
-            override fun run() {
-                for (uuid in playerMana.keys) {
-                    val left = playerMana[uuid]!!
-                    if (left < 20000) {
-                        playerMana[uuid] = left + 10
-                    }
-                }
-            }
-        }.runTaskTimer(soloLeveling, 0L, 2L)
-    }
-
-    private fun formatCombo(comboFormat: String): String {
-        var combo = comboFormat
-        combo = "$combo&7"
-        for (i in 0 until 3 - combo.length) {
-            combo += "_"
-        }
-        combo = combo.uppercase(Locale.getDefault()).replace("L", "&1L").replace("R", "&4R")
-        return combo
-    }
-
     @EventHandler
     fun onClick(event: PlayerInteractEvent) {
         val player = event.player
@@ -110,77 +67,6 @@ class ClickListener(private val soloLeveling: SoloLeveling) : Listener {
                         }
                     }
                 }.runTaskTimer(soloLeveling, 0L, 20L)
-            }
-        } else if (Items.MAGE_WAND.isSimilar(item)) {
-            event.isCancelled = true
-            var combo = wandcc[player.uniqueId]
-            if (combo == null || combo.length < 3) {
-                if (combo == null) {
-                    combo = ""
-                }
-                if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-                    combo += "l"
-                } else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-                    combo += "r"
-                }
-                wandcc[player.uniqueId] = combo
-            }
-            if (combo.length == 3) {
-                wandcc.remove(player.uniqueId)
-                val manaLeft = playerMana[player.uniqueId]!!
-                when (combo) {
-                    "rll" -> {
-                        if (manaLeft < 50) {
-                            Utils.msgPlayer(player, "&fYou do not have enough mana to cast skill")
-                            return
-                        }
-                        playerMana[player.uniqueId] = manaLeft - 50
-                        val fireball = player.launchProjectile(
-                            Fireball::class.java
-                        )
-                        fireball.setIsIncendiary(false)
-                        fireball.yield = 2f
-                        fireball.direction = player.location.direction
-                    }
-
-                    "rlr" -> {
-                        if (manaLeft < 100) {
-                            Utils.msgPlayer(
-                                player,
-                                "&fYou are &e" + (100 - manaLeft) + "&fmana short of cast &aThunderbolt"
-                            )
-                            return
-                        }
-                        playerMana[player.uniqueId] = manaLeft - 100
-                        val location = player.getTargetBlock(null, 100).location
-                        object : BukkitRunnable() {
-                            var strikes = 3
-                            override fun run() {
-                                val locs = arrayOfNulls<Location>(3)
-                                var i = 0
-                                while (i < 3) {
-                                    var x = Math.random() * 6
-                                    var z = Math.random() * 6
-                                    if (Math.random() > 0.5) {
-                                        x *= -1.0
-                                    }
-                                    if (Math.random() > 0.5) {
-                                        z *= -1.0
-                                    }
-                                    locs[i] = location.clone().add(x, 0.0, z)
-                                    i++
-                                }
-                                for (each in locs) {
-                                    location.world.strikeLightning(each!!)
-                                }
-                                strikes -= 1
-                                if (strikes == 0) {
-                                    cancel()
-                                }
-                            }
-                        }.runTaskTimer(soloLeveling, 0L, 6L)
-                    }
-                }
             }
         }
     }
