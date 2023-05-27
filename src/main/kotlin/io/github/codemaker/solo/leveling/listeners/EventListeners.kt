@@ -3,14 +3,17 @@ package io.github.codemaker.solo.leveling.listeners
 import com.destroystokyo.paper.event.server.PaperServerListPingEvent
 import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.framework.SoloLevelingConfigs
+import io.github.codemaker.solo.leveling.managers.ProfileManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityRegainHealthEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -20,6 +23,9 @@ import org.bukkit.event.player.PlayerItemConsumeEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
 
 class EventListeners(private val soloLeveling: SoloLeveling): Listener {
+    private val profileManager: ProfileManager? = soloLeveling.profileManager
+
+
     @EventHandler
     fun onServerListPing(event: PaperServerListPingEvent) {
         event.setHidePlayers(true)
@@ -67,8 +73,22 @@ class EventListeners(private val soloLeveling: SoloLeveling): Listener {
 
     @EventHandler
     fun onPlayerItemConsume(event: PlayerItemConsumeEvent) {
-        if (event.item.type == Material.MILK_BUCKET) {
+        if (event.item.type == Material.MILK_BUCKET || event.item.type == Material.WATER_BUCKET) {
             event.isCancelled = true
         }
     }
+
+    @EventHandler
+    fun onPlayerDamge(event: EntityDamageEvent) {
+        if (event.entity is Player) {
+            val profile = profileManager?.getProfile(event.entity.uniqueId)
+
+            if (event.cause == EntityDamageEvent.DamageCause.FALL) {
+                if (profile?.level?.key == "s" || profile?.level?.key == "a") {
+                    event.isCancelled = true
+                }
+            }
+        }
+    }
+
 }
