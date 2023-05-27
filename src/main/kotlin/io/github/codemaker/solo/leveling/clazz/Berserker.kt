@@ -2,6 +2,7 @@ package io.github.codemaker.solo.leveling.clazz
 
 import io.github.codemaker.solo.leveling.SoloLeveling
 import io.github.codemaker.solo.leveling.Utils
+import io.github.codemaker.solo.leveling.Utils.returnAttributeModifier
 import io.github.codemaker.solo.leveling.damage.DamageSupport.calculateDamage
 import io.github.codemaker.solo.leveling.damage.DamageSupport.getProtection
 import io.github.codemaker.solo.leveling.framework.Class
@@ -10,6 +11,7 @@ import io.github.monun.tap.math.toRadians
 import io.github.monun.tap.protocol.PacketSupport
 import org.bukkit.*
 import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.block.Block
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.LivingEntity
@@ -17,10 +19,12 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -28,8 +32,36 @@ class Berserker(private val soloLeveling: SoloLeveling) : Listener {
     private val profileManager: ProfileManager? = soloLeveling.profileManager
     private val dashSpeed = 2.0 // Adjust the dash speed as desired
     private val dashTargets: MutableMap<UUID, LivingEntity> = HashMap()
-    private val swivelCD: MutableMap<UUID, Int> = HashMap()
+    private val swivelCD: MutableMap<UUID, Int> = HashMap() //ult
+    private val dashCD: MutableMap<UUID, Int> = HashMap() //dash
     private val affectedBlocks = mutableListOf<Location>()
+
+    companion object {
+        private const val DAMAGE_BOOST_AMOUNT = 2.0
+    }
+
+    //Passive
+    @EventHandler
+    fun onDamage(event: EntityDamageEvent) {
+        val entity = event.entity
+        if (entity is Player) {
+            val healthPercentage: Double = entity.health / entity.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.value!!
+            if (healthPercentage < 0.3) {
+                boostDamage(entity)
+            } else {
+                resetBoostedDamage(entity)
+            }
+        }
+    }
+
+    private fun boostDamage(player: Player) {
+        val result = returnAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, DAMAGE_BOOST_AMOUNT, AttributeModifier.Operation.ADD_NUMBER)
+        player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)?.addModifier(result)
+    }
+
+    private fun resetBoostedDamage(player: Player) {
+        player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)?.modifiers?.stream()?.filter { modifier -> modifier.name == "generic.attack.damage" }?.forEach { modifier -> player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)?.removeModifier(modifier) }
+    }
 
     @EventHandler
     fun onClick(event: PlayerInteractEvent) {
@@ -47,6 +79,7 @@ class Berserker(private val soloLeveling: SoloLeveling) : Listener {
 
             val calculatedDamage = calculateDamage(damage, armor, armorTough, protection)
 
+            //Active
             if (Action.PHYSICAL.isLeftClick && player.isSneaking) {
                 event.isCancelled = true
 
@@ -64,17 +97,38 @@ class Berserker(private val soloLeveling: SoloLeveling) : Listener {
                 }
             }
 
+            //Active
             if (Action.PHYSICAL.isRightClick && !player.isSneaking) { //dash
                 event.isCancelled = true
                 val direction: Vector = targetEntity.location.subtract(player.location).toVector().normalize()
 
+                if (dashCD.containsKey(player.uniqueId)) {
+                    Utils.msgPlayer(player, "&fCooldown of &e" + dashCD[player.uniqueId] + "s for &aDash!")
+                    return
+                }
+
+
                 dashTargets[player.uniqueId] = targetEntity
                 performDash(player, targetEntity.location)
                 spawnConeParticles(player.location, direction, 45.0, 10, 0.5)
+
+                dashCD[player.uniqueId] = 1
+                object : BukkitRunnable() {
+                    override fun run() {
+                        val currentCD = dashCD[player.uniqueId]!!
+                        if (currentCD > 0) {
+                            dashCD[player.uniqueId] = currentCD - 1
+                        }
+                        if (currentCD == 0) {
+                            dashCD.remove(player.uniqueId)
+                            cancel()
+                        }
+                    }
+                }.runTaskTimer(soloLeveling, 0L, 20L)
             }
 
 
-            if (Action.PHYSICAL.isRightClick && player.isSneaking) {
+            if (Action.PHYSICAL.isRightClick && player.isSneaking) { //ult
                 event.isCancelled = true
 
                 if (swivelCD.containsKey(player.uniqueId)) {
@@ -88,13 +142,13 @@ class Berserker(private val soloLeveling: SoloLeveling) : Listener {
                         if (clickedBlockLoc != null) {
                             createShockwave(clickedBlockLoc)
                             entity.damage(calculatedDamage.apply {
-                                damage += 10
+                                damage += 20
                             }, player)
                             entity.velocity = player.location.toVector().subtract(entity.location.toVector())
                         }
                     }
                 }
-                swivelCD[player.uniqueId] = 10
+                swivelCD[player.uniqueId] = 25
                 object : BukkitRunnable() {
                     override fun run() {
                         val current = swivelCD[player.uniqueId]!!
